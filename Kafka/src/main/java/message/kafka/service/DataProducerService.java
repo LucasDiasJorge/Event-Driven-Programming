@@ -13,7 +13,7 @@ import java.util.concurrent.CompletableFuture;
 public class DataProducerService {
 
     private final KafkaTemplate<String, String> kafkaTemplate;
-    private Logger logger = LogManager.getRootLogger();
+    private Logger logger = LogManager.getLogger("DataProducerLogger");
 
     public DataProducerService(KafkaTemplate<String, String> kafkaTemplate) {
         this.kafkaTemplate = kafkaTemplate;
