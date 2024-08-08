@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.Serializable;
 import java.util.Map;
 
 @RestController
@@ -20,8 +21,7 @@ public class DataProducerController {
     // Basic controller to send message from client, Topic is created automatically
     @PostMapping
     public ResponseEntity<String> sendMessage(@RequestBody Map<String,Object> body) {
-        dataProducerService.sendMessage((String) body.get("topic"), (String) body.get("message"));
-        dataProducerService.sendMessage((String) body.get("message"));
+        dataProducerService.sendMessage((Serializable) body);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
