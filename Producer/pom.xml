@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>message</groupId>
-	<artifactId>Kafka</artifactId>
+	<artifactId>Producer</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>Kafka</name>
-	<description>Kafka</description>
+	<name>Producer</name>
+	<description>Producer</description>
 	<url/>
 	<licenses>
 		<license/>
