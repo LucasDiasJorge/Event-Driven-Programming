@@ -27,6 +27,7 @@ public class DataProducerFactoryConfig {
         configs.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, properties.getBootstrapServers());
         configs.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         configs.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        configs.put(ProducerConfig.CLIENT_ID_CONFIG, "ProducerId");
         return new DefaultKafkaProducerFactory<>(configs);
     }
 
