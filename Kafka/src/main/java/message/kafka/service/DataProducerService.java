@@ -12,8 +12,13 @@ public class DataProducerService {
         this.kafkaTemplate = kafkaTemplate;
     }
 
-    // Implementation of send message to topic
+    // Implementation of send message to topic from Client
     public void sendMessage(String topic, String message) {
         kafkaTemplate.send(topic, message);
+    }
+
+    // Implementation of send message to topicCreated
+    public void sendMessage(String message) {
+        kafkaTemplate.send("TopicCreated", message);
     }
 }
