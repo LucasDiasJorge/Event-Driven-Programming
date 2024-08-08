@@ -3,10 +3,9 @@ package message.kafka.controller;
 import message.kafka.service.DataProducerService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/data")
@@ -20,8 +19,9 @@ public class DataProducerController {
 
     // Basic controller to send message from client, Topic is created automatically
     @PostMapping
-    public ResponseEntity<String> sendMessage(@RequestParam("message") String message) {
-        dataProducerService.sendMessage("fromDataController", message);
+    public ResponseEntity<String> sendMessage(@RequestBody Map<String,Object> body) {
+        dataProducerService.sendMessage((String) body.get("topic"), (String) body.get("message"));
+        dataProducerService.sendMessage((String) body.get("message"));
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
