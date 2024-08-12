@@ -12,16 +12,11 @@ import java.util.Map;
 @RequestMapping(value = "/data")
 public class DataProducerController {
 
-    private final DataProducerService dataProducerService;
-
     public DataProducerController(DataProducerService dataProducerService) {
-        this.dataProducerService = dataProducerService;
     }
 
-    // Basic controller to send message from client, Topic is created automatically
     @PostMapping
     public ResponseEntity<String> sendMessage(@RequestBody Map<String,Object> body) {
-        dataProducerService.sendMessage((Serializable) body);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
