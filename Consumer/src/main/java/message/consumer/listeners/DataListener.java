@@ -23,7 +23,13 @@ public class DataListener {
         Object value = consumerRecord.value();
         Form form = null;
 
-        if (value instanceof Map) {
+        if (value instanceof String) {
+            try {
+                form = objectMapper.readValue((String) value, Form.class);
+            } catch (JsonProcessingException e) {
+                logger.error("Failed to deserialize JSON string to Form object", e);
+            }
+        } else if (value instanceof Map) {
             form = objectMapper.convertValue(value, Form.class);
         } else {
             logger.error("Unexpected record value type: {}", value.getClass().getName());
