@@ -1,4 +1,4 @@
-package message.kafka.filter.util;
+package message.kafka.util;
 
 import jakarta.servlet.ReadListener;
 import jakarta.servlet.ServletInputStream;
