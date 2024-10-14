@@ -4,7 +4,7 @@ import com.corundumstudio.socketio.SocketIOServer;
 import com.corundumstudio.socketio.listener.ConnectListener;
 import com.corundumstudio.socketio.listener.DataListener;
 import com.corundumstudio.socketio.listener.DisconnectListener;
-import com.example.socketio.message.Message;
+import com.example.socketio.message.Form;
 import com.example.socketio.services.SocketService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -25,19 +25,19 @@ public class SocketModule {
         this.socketService = socketService;
         server.addConnectListener(onConnected());
         server.addDisconnectListener(onDisconnected());
-        server.addEventListener("send_message", Message.class, onChatReceived());
-
+//        server.addEventListener("send_message", Form.class, onChatReceived());
     }
 
-    private DataListener<Message> onChatReceived() {
+    private DataListener<Form> onChatReceived() {
         return (senderClient, data, ackSender) -> {
             logger.info(data.toString());
-            socketService.sendMessage(data.getRoom(),"get_message", senderClient, data.getMessage());
+            socketService.sendMessage(data.getMessage(),"get_message", senderClient, data.getMessage());
         };
     }
 
     private ConnectListener onConnected() {
         return (client) -> {
+            // To-Do old notifications
             String room = client.getHandshakeData().getSingleUrlParam("room");
             client.joinRoom(room);
             logger.info("Socket ID[{}]  Connected to socket", client.getSessionId().toString());
