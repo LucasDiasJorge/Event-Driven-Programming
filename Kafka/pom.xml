@@ -12,6 +12,5 @@
     <modules>
         <module>Consumer</module>
         <module>Producer</module>
-        <module>Socket-IO</module>
     </modules>
 </project>
