@@ -83,3 +83,9 @@ When selecting a tool for event-driven programming, consider the following facto
 
 ## Conclusion
 Event-driven programming allows for building responsive, scalable, and real-time applications by decoupling components and using asynchronous event handling. With a variety of tools like Apache Kafka, Socket.IO, SSE, and others, you can create robust event-driven systems suited to your needs. By choosing the right tool, you can optimize for performance, scalability, and ease of development in your specific use case.
+
+### References
+
+_[Amazon article](https://aws.amazon.com/pt/event-driven-architecture/#:~:text=An%20event%2Ddriven%20architecture%20uses,on%20an%20e%2Dcommerce%20website.)_
+_[Wiki article](https://en.wikipedia.org/wiki/Event-driven_architecture)_
+_[Microsoft article](https://learn.microsoft.com/en-us/azure/architecture/guide/architecture-styles/event-driven)_
