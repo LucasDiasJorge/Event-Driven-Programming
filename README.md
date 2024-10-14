@@ -150,3 +150,7 @@ Each service is assigned specific memory limits to control resource usage:
 
 ### Summary
 This Docker Compose file provides an efficient way to set up a Kafka environment locally for development or testing. It includes Zookeeper for Kafka coordination, Kafka for message streaming, and Kafdrop for monitoring Kafka activity via a user-friendly UI. The memory limits help in managing system resources effectively.
+
+### Broker Configs
+
+_[doc](https://kafka.apache.org/documentation/#brokerconfigs)_
