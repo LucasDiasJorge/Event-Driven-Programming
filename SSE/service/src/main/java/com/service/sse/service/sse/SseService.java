@@ -21,7 +21,7 @@ public class SseService {
 
     Logger logger = LoggerFactory.getLogger(SseService.class);
 
-    public void sendRealTimeReading(SseEmitter emitter, long connectionKeep) {
+    public void sendRealTimeReading(SseEmitter emitter, long connectionKeep, String topic) {
 
         LocalDateTime connectionTime = LocalDateTime.now();
         LocalDateTime disconnectTime = connectionTime.plusSeconds(connectionKeep);
@@ -40,7 +40,7 @@ public class SseService {
             throw new RuntimeException(e);
         }
 
-        consumer.subscribe(Collections.singleton("Lucas"));
+        consumer.subscribe(Collections.singleton(topic));
 
         try {
             while (LocalDateTime.now().isBefore(disconnectTime)) {
@@ -50,15 +50,14 @@ public class SseService {
                 }
                 Thread.sleep(1000);
             }
-            consumer.unsubscribe();
-            consumer.close();
             emitter.complete();
         } catch (IOException | InterruptedException ex) {
             logger.error("ReadingEvent error: {}", ex.getMessage()); // Usuário provavelmente desconectou
-            consumer.unsubscribe();
-            consumer.close();
             emitter.completeWithError(ex);
         }
+
+        consumer.unsubscribe();
+        consumer.close();
     }
 }
 
