@@ -7,30 +7,34 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 @RestController
 @RequestMapping("/sse")
 public class EventController {
-
-    @GetMapping("/events")
+    
+    @GetMapping(path = "/events")
     public ResponseBodyEmitter handleSSE() {
         ResponseBodyEmitter emitter = new ResponseBodyEmitter();
 
+        LocalDateTime disconnectTime = LocalDateTime.now().plusSeconds(10);
+
         ExecutorService executorService = Executors.newSingleThreadExecutor();
         executorService.execute(() -> {
-            for (int i = 0; i < 10; i++) {
-                try {
-                    emitter.send(String.format("Event %d\n", i));
+            try {
+                while (LocalDateTime.now().isBefore(disconnectTime)) {
+                    emitter.send(String.format("Event Simulator\n"));
+
                     Thread.sleep(1000);
-                } catch (Exception ex) {
-                    emitter.completeWithError(ex);
-                    return;
                 }
+                emitter.complete();
+            } catch (Exception ex) {
+                emitter.completeWithError(ex);
             }
-            emitter.complete();
         });
+
 
         return emitter;
     }
