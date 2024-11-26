@@ -44,17 +44,19 @@ public class SseService {
 
         try {
             while (LocalDateTime.now().isBefore(disconnectTime)) {
-                ConsumerRecords<String, String> records = consumer.poll(1000);
+                ConsumerRecords<String, String> records = consumer.poll(250);
                 for (ConsumerRecord<String,String> data: records) {
                     emitter.send(new ReadingEvent(Map.of("epc",data.value())).delivery());
                 }
-                Thread.sleep(1000);
+                Thread.sleep(150);
             }
             emitter.complete();
         } catch (IOException | InterruptedException ex) {
             logger.error("ReadingEvent error: {}", ex.getMessage()); // Usuário provavelmente desconectou
             emitter.completeWithError(ex);
         }
+
+        // Goodbye event
 
         consumer.unsubscribe();
         consumer.close();
