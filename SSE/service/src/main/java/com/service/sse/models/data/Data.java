@@ -1,4 +1,4 @@
-package com.service.sse.events.data;
+package com.service.sse.models.data;
 
 import com.service.sse.enums.EEventType;
 

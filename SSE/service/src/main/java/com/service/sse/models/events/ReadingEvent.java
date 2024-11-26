@@ -1,7 +1,7 @@
-package com.service.sse.events;
+package com.service.sse.models.events;
 
 import com.service.sse.enums.EEventType;
-import com.service.sse.events.data.Data;
+import com.service.sse.models.data.Data;
 
 import java.util.Map;
 

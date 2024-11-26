@@ -1,6 +1,6 @@
 package com.service.sse.controller;
 
-import com.service.sse.service.SseService;
+import com.service.sse.service.sse.SseService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;

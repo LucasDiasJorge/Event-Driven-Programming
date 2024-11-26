@@ -1,7 +1,7 @@
-package com.service.sse.service;
+package com.service.sse.service.sse;
 
-import com.service.sse.events.HandShakeEvent;
-import com.service.sse.events.ReadingEvent;
+import com.service.sse.models.events.HandShakeEvent;
+import com.service.sse.models.events.ReadingEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -24,11 +24,12 @@ public class SseService {
 
         try {
             for (int i = 0; i < (connectionKeep / 1000); i++) {
-                emitter.send(new ReadingEvent(Map.of()).delivery());
+                emitter.send(new ReadingEvent(Map.of(/*Last Readed Tag*/)).delivery());
                 Thread.sleep(1000);
             }
             emitter.complete();
         } catch (IOException | InterruptedException ex) {
+            logger.error("ReadingEvent error: {}", ex.getMessage()); // User probably disconnect
             emitter.completeWithError(ex);
         }
     }
