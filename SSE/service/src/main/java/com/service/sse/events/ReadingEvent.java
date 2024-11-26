@@ -5,20 +5,22 @@ import com.service.sse.events.data.Data;
 
 import java.util.Map;
 
-public class HandShakeEvent extends AbstractEvent {
+public class ReadingEvent extends AbstractEvent {
 
-    public HandShakeEvent(Map<?,?> content) {
+    public ReadingEvent(Map<?,?> content) {
 
-        this.event = EEventType.HANDSHAKE.getValue();
+        this.event = EEventType.REAL_TIME_READING.getValue();
 
         Data data = new Data();
 
-        data.eventType = EEventType.HANDSHAKE;
+        data.eventType = EEventType.REAL_TIME_READING;
         data.bool = false;
         data.company = null;
-        data.title = EEventType.HANDSHAKE.getValue();
+        data.title = EEventType.REAL_TIME_READING.getValue();
+
         data.content = content;
 
         this.data = data;
     }
+
 }
