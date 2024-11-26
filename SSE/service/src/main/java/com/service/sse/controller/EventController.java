@@ -1,52 +1,41 @@
 package com.service.sse.controller;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 @RestController
 @RequestMapping("/sse")
 public class EventController {
-    
-    @GetMapping(path = "/events")
-    public ResponseBodyEmitter handleSSE() {
-        ResponseBodyEmitter emitter = new ResponseBodyEmitter();
 
-        LocalDateTime disconnectTime = LocalDateTime.now().plusSeconds(10);
+    @Value("${spring.mvc.async.request-timeout}")
+    private Long connectionKeep;
+
+    @GetMapping(path = "/events")
+    public SseEmitter handleSSE() {
+
+        SseEmitter emitter = new SseEmitter(connectionKeep);
 
         ExecutorService executorService = Executors.newSingleThreadExecutor();
         executorService.execute(() -> {
             try {
-                while (LocalDateTime.now().isBefore(disconnectTime)) {
-                    emitter.send(String.format("Event Simulator\n"));
 
+                for (int i = 0; i < (connectionKeep / 1000); i++) {
+                    emitter.send("Event Simulator\n");
                     Thread.sleep(1000);
                 }
                 emitter.complete();
-            } catch (Exception ex) {
+            } catch (IOException | InterruptedException ex) {
                 emitter.completeWithError(ex);
             }
         });
 
-
         return emitter;
-    }
-
-
-    private final SseEmitter sseEmitter = new SseEmitter();
-
-    public void sendEvent(String event) {
-        try {
-            sseEmitter.send(event);
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
     }
 }

@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: sse
+  datasource:
+    url: jdbc:postgresql://localhost:5432/vtwo
+    username: postgres
+    password: postgres
+  mvc:
+    async:
+      request-timeout: 480000 # ms (4 min)
+
+server:
+  port: 8889
