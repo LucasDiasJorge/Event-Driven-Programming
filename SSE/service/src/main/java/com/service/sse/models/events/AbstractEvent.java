@@ -1,7 +1,10 @@
 package com.service.sse.models.events;
 
 import com.service.sse.models.data.Data;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter.SseEventBuilder;
 
+import java.util.Map;
 import java.util.UUID;
 
 public abstract class AbstractEvent {
@@ -34,14 +37,22 @@ public abstract class AbstractEvent {
         this.data = data;
     }
 
-    public String delivery() {
-        StringBuilder sb = new StringBuilder();
+    public Data getData() {
+        return data;
+    }
 
-        sb.append("id:").append(this.id);
-        sb.append("\nevent:").append(this.event);
-        sb.append("\ndata:").append(this.data);
+    public void setData(Data data) {
+        this.data = data;
+    }
 
-        return sb.toString();
+    public SseEventBuilder delivery() {
+
+        SseEventBuilder eventBuilder = SseEmitter.event();
+        eventBuilder.id(this.getId().toString());
+        eventBuilder.name(this.getEvent());
+        eventBuilder.data(this.getData());
+
+        return eventBuilder;
     }
 
 }
