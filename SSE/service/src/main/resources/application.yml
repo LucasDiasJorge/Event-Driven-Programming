@@ -1,13 +1,28 @@
 spring:
+  mvc:
+    async:
+      request-timeout: 480000 # ms (8 min)
   application:
     name: sse
   datasource:
     url: jdbc:postgresql://localhost:5432/vtwo
     username: postgres
     password: postgres
-  mvc:
-    async:
-      request-timeout: 480000 # ms (8 min)
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: "${keycloak.url}/realms/${keycloak.realm}"
 
 server:
-  port: 8889
+  port: 8891
+
+keycloak:
+  url: http://localhost:8080
+  client-id: my-client
+  realm: my-realm
+  admin-url: ${keycloak.url}/admin/realms/${keycloak.realm}
+  realms-url: ${keycloak.url}/realms/${keycloak.realm}
+  auth:
+    openid-token: ${keycloak.realms-url}/protocol/openid-connect/token
+    client-secret: 9cEohGg6j3COw0oprJuw1nVXaEYfsiSN
