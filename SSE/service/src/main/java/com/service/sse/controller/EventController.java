@@ -13,7 +13,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 @RequestMapping("/sse")
 public class EventController {
 
-    private final Long connectionKeep = 120L;
+    private final Long connectionKeep = 3600L;
 
     Logger logger = LoggerFactory.getLogger(EventController.class);
 
