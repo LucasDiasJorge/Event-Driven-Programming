@@ -17,6 +17,12 @@ spring:
 server:
   port: 8891
 
+app:
+  settings:
+    timeout: 250
+    heartbeat-interval: 30
+    connection-keepalive: 3600
+
 keycloak:
   url: http://localhost:8080
   client-id: my-client
