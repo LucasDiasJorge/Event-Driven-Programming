@@ -8,6 +8,7 @@ import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -21,75 +22,63 @@ import java.util.UUID;
 @Service
 public class SseService {
 
-    Logger logger = LoggerFactory.getLogger(SseService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SseService.class);
 
-    public void sendRealTimeReading(SseEmitter emitter, long connectionKeep, String topic) {
+    @Value("${app.settings.timeout}")
+    private long pollTimeout; // Em milissegundos
 
-        LocalDateTime disconnectTime = LocalDateTime.now().plusSeconds(connectionKeep);
-        KafkaConsumer<String, String> consumer = null;
+    @Value("${app.settings.heartbeat-interval}")
+    private long heartbeatInterval; // Em segundos
 
-        try {
-            // Envia o evento de handshake no início da conexão
-            try {
-                SseEmitter.SseEventBuilder handshakeEvent = new HandShakeEvent(Map.of()).delivery();
-                emitter.send(handshakeEvent.build());
-            } catch (IOException e) {
-                logger.error("Handshake event error: {}", e.getMessage());
-                emitter.completeWithError(e);
-                return; // Saia se o handshake falhar
-            }
+    public void processRealTimeReading(SseEmitter emitter, String topic, long connectionKeepAlive) {
+        new Thread(() -> handleSseConnection(emitter, topic, connectionKeepAlive)).start();
+    }
 
-            consumer = new KafkaConsumer<>(new KafkaConsumerConfig().consumerFactory().getConfigurationProperties());
-
-            try {
-                consumer.subscribe(List.of(topic));
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-            }
-            LocalDateTime lastHeartbeatTime = LocalDateTime.now();
-
-            while (LocalDateTime.now().isBefore(disconnectTime)) {
-
-                ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(250));
-
-                for (ConsumerRecord<String, String> data : records) {
-                    try {
-                        emitter.send(new ReadingEvent(Map.of("epc", data.value())).delivery().build());
-                    } catch (IOException e) {
-                        logger.error("Error sending reading event: {}", e.getMessage());
-                        emitter.completeWithError(e);
-                        return; // Saia se o cliente desconectar
-                    }
-                }
-
-                // Envia heartbeat a cada 30 segundos
-                if (Duration.between(lastHeartbeatTime, LocalDateTime.now()).getSeconds() >= 30) {
-                    try {
-                        emitter.send(SseEmitter.event().name("heartbeat").data("ping").id(UUID.randomUUID().toString()).build());
-                        lastHeartbeatTime = LocalDateTime.now();
-                    } catch (IOException e) {
-                        logger.error("Error sending heartbeat: {}", e.getMessage());
-                        emitter.completeWithError(e);
-                        return; // Saia se o cliente desconectar
-                    }
-                }
-                Thread.sleep(250);
-            }
+    private void handleSseConnection(SseEmitter emitter, String topic, long connectionKeepAlive) {
+        LocalDateTime disconnectTime = LocalDateTime.now().plusSeconds(connectionKeepAlive);
+        LocalDateTime lastHeartbeatTime = LocalDateTime.now();
+        try (KafkaConsumer<String, String> consumer = createKafkaConsumer(topic)) {
+            sendHandshakeEvent(emitter);
+            processKafkaRecords(emitter, consumer, disconnectTime, lastHeartbeatTime);
         } catch (Exception e) {
-            logger.error("Unexpected error: {}", e.getMessage());
+            LOGGER.error("Unexpected error: {}", e.getMessage());
+            emitter.completeWithError(e);
         } finally {
-            System.out.println("FINALLY");
-            if (consumer != null) {
-                try {
-                    consumer.unsubscribe();
-                    consumer.close();
-                } catch (Exception e) {
-                    logger.warn("Error closing consumer: {}", e.getMessage());
-                }
-            }
             emitter.complete();
         }
     }
 
-}
+    private KafkaConsumer<String, String> createKafkaConsumer(String topic) {
+        KafkaConsumer<String, String> consumer = new KafkaConsumer<>(new KafkaConsumerConfig().consumerFactory().getConfigurationProperties());
+        consumer.subscribe(List.of(topic));
+        return consumer;
+    }
 
+    private void sendHandshakeEvent(SseEmitter emitter) throws IOException {
+        emitter.send(new HandShakeEvent(Map.of()).delivery().build());
+    }
+
+    private void processKafkaRecords(SseEmitter emitter, KafkaConsumer<String, String> consumer,
+                                     LocalDateTime disconnectTime, LocalDateTime lastHeartbeatTime) throws InterruptedException, IOException {
+        while (LocalDateTime.now().isBefore(disconnectTime)) {
+            ConsumerRecords<String, String> records = consumer.poll(Duration.ofSeconds(pollTimeout));
+            sendReadingEvents(emitter, records);
+        }
+    }
+
+    private void sendReadingEvents(SseEmitter emitter, ConsumerRecords<String, String> records) {
+        for (ConsumerRecord<String, String> record : records) {
+            try {
+                emitter.send(new ReadingEvent(Map.of("epc", record.value())).delivery().build());
+            } catch (IOException e) {
+                LOGGER.error("Error sending reading event: {}", e.getMessage());
+                emitter.completeWithError(e);
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    private void sendHeartbeat(SseEmitter emitter) throws IOException {
+        emitter.send(SseEmitter.event().name("heartbeat").data("ping").id(UUID.randomUUID().toString()).build());
+    }
+}
