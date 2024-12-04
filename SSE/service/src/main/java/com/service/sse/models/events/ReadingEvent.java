@@ -7,12 +7,13 @@ import java.util.Map;
 
 public class ReadingEvent extends AbstractEvent {
 
-    public ReadingEvent(Map<?,?> content) {
+    public ReadingEvent(Map<?,?> content, Long dataId) {
 
         this.event = EEventType.REAL_TIME_READING.getValue();
 
         Data data = new Data();
 
+        data.id = dataId;
         data.eventType = EEventType.REAL_TIME_READING;
         data.bool = false;
         data.company = null;

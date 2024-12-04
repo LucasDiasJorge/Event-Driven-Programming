@@ -83,7 +83,7 @@ public class SseService {
         for (ConsumerRecord<String, String> record : records) {
             try {
                 Map<?, ?> data = objectMapper.readValue(record.value(), Map.class);
-                emitter.send(new ReadingEvent(data).delivery().build());
+                emitter.send(new ReadingEvent(data, record.offset()).delivery().build());
             } catch (IOException e) {
                 LOGGER.error("Error sending reading event: {}", e.getMessage());
                 emitter.completeWithError(e);
