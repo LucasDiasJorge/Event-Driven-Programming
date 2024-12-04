@@ -5,8 +5,8 @@ import com.service.sse.enums.base.EnumOptionBase;
 public enum EEventType implements EnumOptionBase {
 
     HANDSHAKE("Handshake"),
+    GOODBYE("Good Bye"),
     REAL_TIME_READING("Real Time Reading");
-
 
     private String value;
 

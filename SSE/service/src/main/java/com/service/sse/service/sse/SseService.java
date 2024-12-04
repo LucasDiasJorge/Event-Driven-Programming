@@ -2,6 +2,7 @@ package com.service.sse.service.sse;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.service.sse.kafka.config.KafkaConsumerConfig;
+import com.service.sse.models.events.GoodByeEvent;
 import com.service.sse.models.events.HandShakeEvent;
 import com.service.sse.models.events.ReadingEvent;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -28,25 +29,34 @@ public class SseService {
     @Value("${app.settings.timeout}")
     private long pollTimeout; // Em milissegundos
 
-    @Value("${app.settings.heartbeat-interval}")
-    private long heartbeatInterval; // Em segundos
-
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     public void processRealTimeReading(SseEmitter emitter, String topic, long connectionKeepAlive) {
-        new Thread(() -> handleSseConnection(emitter, topic, connectionKeepAlive)).start();
+        new Thread(() -> {
+            try {
+                handleSseConnection(emitter, topic, connectionKeepAlive);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }).start();
     }
 
-    private void handleSseConnection(SseEmitter emitter, String topic, long connectionKeepAlive) {
+    private void handleSseConnection(SseEmitter emitter, String topic, long connectionKeepAlive) throws IOException {
         LocalDateTime disconnectTime = LocalDateTime.now().plusSeconds(connectionKeepAlive);
-        LocalDateTime lastHeartbeatTime = LocalDateTime.now();
+
         try (KafkaConsumer<String, String> consumer = createKafkaConsumer(topic)) {
             sendHandshakeEvent(emitter);
-            processKafkaRecords(emitter, consumer, disconnectTime, lastHeartbeatTime);
+            processKafkaRecords(emitter, consumer, disconnectTime);
+            sendGoodByeEvent(emitter);
         } catch (Exception e) {
             LOGGER.error("Unexpected error: {}", e.getMessage());
             emitter.completeWithError(e);
         } finally {
+            try {
+                sendGoodByeEvent(emitter);
+            } catch (IOException e) {
+                LOGGER.error("Error sending GoodByeEvent: {}", e.getMessage());
+            }
             emitter.complete();
         }
     }
@@ -62,7 +72,7 @@ public class SseService {
     }
 
     private void processKafkaRecords(SseEmitter emitter, KafkaConsumer<String, String> consumer,
-                                     LocalDateTime disconnectTime, LocalDateTime lastHeartbeatTime) {
+                                     LocalDateTime disconnectTime) throws IOException {
         while (LocalDateTime.now().isBefore(disconnectTime)) {
             ConsumerRecords<String, String> records = consumer.poll(Duration.ofSeconds(pollTimeout));
             sendReadingEvents(emitter, records);
@@ -72,10 +82,8 @@ public class SseService {
     private void sendReadingEvents(SseEmitter emitter, ConsumerRecords<String, String> records) {
         for (ConsumerRecord<String, String> record : records) {
             try {
-
                 Map<?, ?> data = objectMapper.readValue(record.value(), Map.class);
-                emitter.send(new ReadingEvent(data).delivery().build());
-
+                emitter.send(new ReadingEvent(data, record.offset()).delivery().build());
             } catch (IOException e) {
                 LOGGER.error("Error sending reading event: {}", e.getMessage());
                 emitter.completeWithError(e);
@@ -84,7 +92,7 @@ public class SseService {
         }
     }
 
-    private void sendHeartbeat(SseEmitter emitter) throws IOException {
-        emitter.send(SseEmitter.event().name("heartbeat").data("ping").id(UUID.randomUUID().toString()).build());
+    private void sendGoodByeEvent(SseEmitter emitter) throws IOException {
+        emitter.send(new GoodByeEvent(Map.of()).delivery().build());
     }
 }

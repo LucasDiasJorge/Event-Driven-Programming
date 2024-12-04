@@ -1,7 +1,8 @@
 package com.service.sse.kafka.config;
 
+import com.fasterxml.jackson.databind.JsonSerializable;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
-import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.common.serialization.Serializer;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,6 +18,9 @@ import java.util.Map;
 @Configuration
 public class KafkaConsumerConfig {
 
+    public KafkaConsumerConfig() {
+    }
+
     @Bean
     public ConsumerFactory<String, String> consumerFactory() {
         Map<String, Object> configProps = new HashMap<>();
@@ -24,11 +28,7 @@ public class KafkaConsumerConfig {
         configProps.put(ConsumerConfig.GROUP_ID_CONFIG, "SSE_KAFKA_SERVICE");
         configProps.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         configProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        configProps.put(ConsumerConfig.SESSION_TIMEOUT_MS_CONFIG, 3600000); // 1 hora
-        configProps.put(ConsumerConfig.HEARTBEAT_INTERVAL_MS_CONFIG, 300000); // 5 minutos
         configProps.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
-
-
         return new DefaultKafkaConsumerFactory<>(configProps);
     }
 
