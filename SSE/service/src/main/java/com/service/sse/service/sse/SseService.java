@@ -1,5 +1,6 @@
 package com.service.sse.service.sse;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.service.sse.kafka.config.KafkaConsumerConfig;
 import com.service.sse.models.events.HandShakeEvent;
 import com.service.sse.models.events.ReadingEvent;
@@ -30,6 +31,8 @@ public class SseService {
     @Value("${app.settings.heartbeat-interval}")
     private long heartbeatInterval; // Em segundos
 
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
     public void processRealTimeReading(SseEmitter emitter, String topic, long connectionKeepAlive) {
         new Thread(() -> handleSseConnection(emitter, topic, connectionKeepAlive)).start();
     }
@@ -59,7 +62,7 @@ public class SseService {
     }
 
     private void processKafkaRecords(SseEmitter emitter, KafkaConsumer<String, String> consumer,
-                                     LocalDateTime disconnectTime, LocalDateTime lastHeartbeatTime) throws InterruptedException, IOException {
+                                     LocalDateTime disconnectTime, LocalDateTime lastHeartbeatTime) {
         while (LocalDateTime.now().isBefore(disconnectTime)) {
             ConsumerRecords<String, String> records = consumer.poll(Duration.ofSeconds(pollTimeout));
             sendReadingEvents(emitter, records);
@@ -69,7 +72,10 @@ public class SseService {
     private void sendReadingEvents(SseEmitter emitter, ConsumerRecords<String, String> records) {
         for (ConsumerRecord<String, String> record : records) {
             try {
-                emitter.send(new ReadingEvent(Map.of("epc", record.value())).delivery().build());
+
+                Map<?, ?> data = objectMapper.readValue(record.value(), Map.class);
+                emitter.send(new ReadingEvent(data).delivery().build());
+
             } catch (IOException e) {
                 LOGGER.error("Error sending reading event: {}", e.getMessage());
                 emitter.completeWithError(e);
