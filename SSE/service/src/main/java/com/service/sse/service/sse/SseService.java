@@ -47,7 +47,7 @@ public class SseService {
         try (KafkaConsumer<String, String> consumer = createKafkaConsumer(topic)) {
             sendHandshakeEvent(emitter);
             processKafkaRecords(emitter, consumer, disconnectTime);
-
+            sendGoodByeEvent(emitter);
         } catch (Exception e) {
             LOGGER.error("Unexpected error: {}", e.getMessage());
             emitter.completeWithError(e);
