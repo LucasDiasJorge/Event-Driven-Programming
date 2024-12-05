@@ -5,8 +5,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0cfc5489-68d4-4e12-923a-2db3f865a85c" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/../.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/modules.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../src/Main.java" beforeDir="false" />
+      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Kafka/Producer/src/main/java/message/kafka/controller/DataProducerController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../Kafka/Producer/src/main/java/message/kafka/controller/DataProducerController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Kafka/Producer/src/main/java/message/kafka/interceptor/RequestInterceptor.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../Kafka/Producer/src/main/java/message/kafka/interceptor/RequestInterceptor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/service/sse/config/JwtAuthenticationFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/service/sse/config/JwtAuthenticationFilter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/application.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/service/sse/controller/EventController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/service/sse/controller/EventController.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -16,6 +22,7 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
+        <option value="Enum" />
         <option value="Class" />
       </list>
     </option>
@@ -41,6 +48,8 @@
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
     &quot;Application.SseApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Notification.DisplayName-DoNotAsk-Database detector&quot;: &quot;Database detector&quot;,
+    &quot;Notification.DoNotAsk-Database detector&quot;: &quot;true&quot;,
     &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
     &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
     &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
@@ -63,12 +72,24 @@
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
+  <component name="ReactorSettings">
+    <option name="notificationShown" value="true" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CreateClassDialog.RecentsKey">
+      <recent name="com.service.sse.events.data" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="com.service.sse.models.events" />
+    </key>
+  </component>
   <component name="RunManager" selected="Spring Boot.SseApplication">
-    <configuration name="SseApplication (1)" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+    <configuration name="SseApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.service.sse.SseApplication" />
+      <module name="sse" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="com.service.sse.*" />
+          <option name="PATTERN" value="com.service.sse.config.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -78,10 +99,9 @@
     </configuration>
     <configuration name="SseApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.service.sse.SseApplication" />
-      <module name="sse" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="com.service.sse.*" />
+          <option name="PATTERN" value="com.service.sse.config.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -98,7 +118,6 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.SseApplication (1)" />
         <item itemvalue="Application.SseApplication" />
       </list>
     </recent_temporary>
@@ -121,12 +140,53 @@
       <updated>1732559383462</updated>
       <workItem from="1732559384516" duration="967000" />
       <workItem from="1732560373013" duration="193000" />
-      <workItem from="1732560576156" duration="1559000" />
+      <workItem from="1732560576156" duration="3897000" />
+      <workItem from="1732623406123" duration="26490000" />
+      <workItem from="1732796361991" duration="14727000" />
+      <workItem from="1732882173324" duration="11312000" />
+      <workItem from="1733141520514" duration="23580000" />
+      <workItem from="1733232380502" duration="1816000" />
+      <workItem from="1733241645446" duration="4060000" />
+      <workItem from="1733315505230" duration="13005000" />
+      <workItem from="1733339855796" duration="4580000" />
+      <workItem from="1733401001307" duration="1680000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="UnknownFeatures">
+    <option featureType="dependencySupport" implementationName="java:org.springframework:spring-core" />
+    <option featureType="dependencySupport" implementationName="executable:docker" />
+    <option featureType="dependencySupport" implementationName="java:org.apache.kafka:kafka_2.13" />
+    <option featureType="dependencySupport" implementationName="java:io.projectreactor:reactor-core" />
+    <option featureType="dependencySupport" implementationName="java:org.springframework.cloud:spring-cloud-context" />
+    <option featureType="dependencySupport" implementationName="java:org.springframework:spring-messaging" />
+    <option featureType="dependencySupport" implementationName="java:org.springframework.boot:spring-boot" />
+    <option featureType="dependencySupport" implementationName="java:org.springframework:spring-webmvc" />
+    <option featureType="dependencySupport" implementationName="java:jakarta.xml.ws:jakarta.xml.ws-api" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/service/sse/service/sse/SseService.java</url>
+          <line>95</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/service/sse/service/sse/SseService.java</url>
+          <line>55</line>
+          <option name="timeStamp" value="2" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/service/sse/service/sse/SseService.java</url>
+          <line>59</line>
+          <option name="timeStamp" value="4" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
